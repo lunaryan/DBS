@@ -1,52 +1,54 @@
-import dbs 
+import dbs
 import transformers
-import torch 
-import json 
-import os 
+import torch
+import json
+import os
 
 
 def arch_parser(tokenizer_filepath):
     # if 'BERT-bert-base-uncased.pt' in tokenizer_filepath:
     #     arch_name = 'bert'
-    
+
     if 'DistilBERT' in tokenizer_filepath:
         arch_name = 'distilbert'
-    
+
     elif 'GPT-2-gpt2.pt' in tokenizer_filepath:
         arch_name = 'gpt2'
-    
-    else:
-        raise NotImplementedError('Transformer arch not support!')
 
-    
+
+    else:
+        raise NotImplementedError(f'Transformer arch {tokenizer_filepath} not support!')
+
+    print('use arch', arch_name)
+
     return arch_name
 
 def load_models(arch_name,model_filepath,device):
     print(transformers.__version__)
     print(torch.__version__)
     target_model = torch.load(model_filepath).to(device)
-    
+
     if arch_name == 'distilbert':
         backbone_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'embeddings/DistilBERT-distilbert-base-uncased.pt')
         backbone_model = torch.load(backbone_filepath).to(device)
         tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-        benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000006/model.pt')
-        benign_model = torch.load(benign_reference_model_filepath).to(device)
+        #benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000006/model.pt')
+        #benign_model = torch.load(benign_reference_model_filepath).to(device)
     elif arch_name == 'gpt2':
         backbone_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'embeddings/GPT-2-gpt2.pt')
         backbone_model = torch.load(backbone_filepath).to(device)
         tokenizer = transformers.GPT2Tokenizer.from_pretrained('gpt2')
-        benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000001/model.pt')
-        benign_model = torch.load(benign_reference_model_filepath).to(device)
-    
-    else: 
+        #benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000001/model.pt')
+        #benign_model = torch.load(benign_reference_model_filepath).to(device)
+
+    else:
         raise NotImplementedError('Transformer arch not support!')
-    
+
 
     if not hasattr(tokenizer,'pad_token') or tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token 
-    
-    return backbone_model,target_model,benign_model, tokenizer
+        tokenizer.pad_token = tokenizer.eos_token
+
+    return backbone_model,target_model, tokenizer
 
 def enumerate_trigger_options():
     label_list = [0,1]
@@ -61,7 +63,7 @@ def enumerate_trigger_options():
                     trigger_opt = {'victim_label':victim_label, 'target_label':target_label, 'position':position}
 
                     trigger_options.append(trigger_opt)
-    
+
     return trigger_options
 
 def load_data(victim_label,examples_dirpath):
@@ -70,19 +72,20 @@ def load_data(victim_label,examples_dirpath):
     fns.sort()
 
 
-    victim_data_list = [] 
+    victim_data_list = []
 
     for fn in fns:
         if int(fn.split('_')[-3]) == victim_label:
-            
-            with open(fn,'r') as fh: 
+
+            with open(fn,'r') as fh:
                 text = fh.read()
                 text = text.strip('\n')
                 victim_data_list.append(text)
-    
 
+    print(len(victim_data_list))
+    print(victim_data_list[0])
     return victim_data_list
 
 
 
-    
+
