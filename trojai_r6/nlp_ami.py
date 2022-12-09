@@ -9,7 +9,7 @@ import yaml
 import argparse
 import sys
 import logging
-
+import json
 from utils.logger import Logger
 from utils import utils
 from process import AttrChanger
@@ -30,15 +30,24 @@ def seed_torch(seed):
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
+def read_config(model_id):
+    config_path=TROJAI_R6_DATASET_DIR+'models/'+model_id+'/config.json'
+    with open(config_path, 'r') as f:
+        cfg=json.load(f)
+    triggers=cfg['triggers']
+    triggers=[trigger['text'] for trigger in triggers]
+    return triggers
+
 def ami(model_filepath, tokenizer_filepath, result_filepath, scratch_dirpath, examples_dirpath):
 
     start_time = time.time()
 
     # set logger
     model_id = model_filepath.split('/')[-2]
+    triggers=read_config(model_id)
+    print('ground truth triggers:', triggers)
     logging_filepath = os.path.join(scratch_dirpath,model_id + '.log')
     logger = Logger(logging_filepath, logging.DEBUG, logging.DEBUG)
-
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -64,28 +73,18 @@ def ami(model_filepath, tokenizer_filepath, result_filepath, scratch_dirpath, ex
     embedding_backbone.eval()
     target_model.eval()
 
-    scanner = AttrChanger(embedding_backbone,target_model,tokenizer,arch_name,device,logger,config)
+    scanner = AttrChanger(embedding_backbone,target_model,tokenizer,arch_name,device,logger,config,triggers)
     #TODO: iterate all samples -- seems not necessary?
     #TODO: find 'important tokens' with large attention
     sample_list = utils.load_data(0,examples_dirpath)
     sorted_index=scanner.sort_by_attn(sample_list)
-
     # enumerate all possible trigger options for scanning
     keep_idx, clique, effect_lens = scanner.change_one_token(sorted_index)
     clique = scanner.check_clique(clique, effect_lens, keep_idx)
 
     logits_changes = []
 
-    #best_loss = 1e+10
-
-    #for change in token_changes:
-    #    #TODO: get logits
-
-
-    #TODO: now we get the set of real important tokens, the clique
-
-    #TODO: verify if the clique is interpretable
-
+    '''
     for scanning_result in scanning_result_list:
         logger.result_collection('victim label: {}  target label: {} position: {}  trigger: {}  loss: {:.6f}'.format(scanning_result['victim_label'],scanning_result['target_label'],scanning_result['position'], scanning_result['trigger'],scanning_result['loss']))
 
@@ -96,7 +95,7 @@ def ami(model_filepath, tokenizer_filepath, result_filepath, scratch_dirpath, ex
     logger.best_result('victim label: {}  target label: {} position: {}  trigger: {}  loss: {:.6f}'.format(best_estimation['victim_label'],best_estimation['target_label'],best_estimation['position'], best_estimation['trigger'],best_estimation['loss']))
 
     return best_estimation['loss'],scanning_time
-
+    '''
 
 if __name__ == '__main__':
 
@@ -109,7 +108,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    best_loss,scanning_time = ami(args.model_filepath, args.tokenizer_filepath, args.result_filepath, args.scratch_dirpath, args.examples_dirpath)
+    ami(args.model_filepath, args.tokenizer_filepath, args.result_filepath, args.scratch_dirpath, args.examples_dirpath)
 
 
 

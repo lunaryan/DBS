@@ -75,7 +75,7 @@ def load_data(victim_label,examples_dirpath):
     victim_data_list = []
 
     for fn in fns:
-        if int(fn.split('_')[-3]) == victim_label:
+        if True: # int(fn.split('_')[-3]) == victim_label:
 
             with open(fn,'r') as fh:
                 text = fh.read()
@@ -83,8 +83,10 @@ def load_data(victim_label,examples_dirpath):
                 victim_data_list.append(text)
 
     print(len(victim_data_list))
-    print(victim_data_list[0])
+    #for i, str_i in enumerate(victim_data_list):
+    #    print(i, str_i)
     return victim_data_list
+
 
 
 
