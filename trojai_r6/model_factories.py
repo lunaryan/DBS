@@ -10,6 +10,26 @@ import trojai.modelgen.architecture_factory
 
 # ALL_ARCHITECTURE_KEYS = ['LstmLinear', 'GruLinear', 'Linear']
 ALL_ARCHITECTURE_KEYS = ['LstmLinear', 'GruLinear', 'FCLinear']
+import torch
+from transformers import AutoModel
+
+class NerLinearModel(torch.nn.Module):
+    def forward(self, input_ids, attention_mask=None, labels=None):
+        outputs = self.transformer(input_ids, attention_mask=attention_mask)
+        sequence_output = outputs[0]
+        valid_output = self.dropout(sequence_output)
+        emissions = self.classifier(valid_output)
+        loss = None
+        if labels is not None:
+            loss_fct = torch.nn.CrossEntropyLoss(ignore_index=self.ignore_index)
+            if attention_mask is not None:
+                active_loss = attention_mask.view(-1) == 1
+                active_logits = emissions.view(-1, self.num_labels)
+                active_labels = torch.where(active_loss, labels.view(-1), torch.tensor(loss_fct.ignore_index).type_as(labels))
+                loss = loss_fct(active_logits, active_labels)
+            else:
+                loss = loss_fct(emissions.view(-1, self.num_labels), labels.view(-1))
+        return loss, emissions
 
 
 class LinearModel(torch.nn.Module):

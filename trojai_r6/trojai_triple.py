@@ -9,10 +9,14 @@ import yaml
 import argparse
 import sys
 import logging
-
+import json
 from utils.logger import Logger
 from utils import utils
-from scanner import DBS_Scanner
+from process import AttrChanger
+from rephrase import Paraphraser
+import math
+import time
+import pandas as pd
 
 
 warnings.filterwarnings('ignore')
@@ -30,16 +34,26 @@ def seed_torch(seed):
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
-def dbs(model_filepath, tokenizer_filepath, result_filepath, scratch_dirpath, examples_dirpath):
+def read_config(model_id):
+    config_path=TROJAI_R6_DATASET_DIR+'models/'+model_id+'/config.json'
+    with open(config_path, 'r') as f:
+        cfg=json.load(f)
+    triggers=cfg['triggers']
+    if triggers:
+        triggers=[trigger['text'] for trigger in triggers]
+    return triggers
+
+def ami(model_filepath, tokenizer_filepath, result_filepath, scratch_dirpath, examples_dirpath):
 
     start_time = time.time()
 
     # set logger
     model_id = model_filepath.split('/')[-2]
+    mid = int(model_id.split('-')[1])
+    triggers=read_config(model_id)
+    print('ground truth triggers:', triggers)
     logging_filepath = os.path.join(scratch_dirpath,model_id + '.log')
     logger = Logger(logging_filepath, logging.DEBUG, logging.DEBUG)
-
-
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -56,48 +70,45 @@ def dbs(model_filepath, tokenizer_filepath, result_filepath, scratch_dirpath, ex
 
     # load models
     # trojai r6 seperates the classification probe and transformer backbone as two models
-    # backbone_model: transformer model
+    # embedding_backbone: transformer model
     # target_model: classification probe
     # tokenizer: pre-trained tokenizer for each transformer arch
 
-    backbone_model,target_model,benign_model,tokenizer = utils.load_models(arch_name,model_filepath,device)
+    embedding_backbone,target_model,tokenizer = utils.load_models(arch_name,model_filepath,device)
 
-    backbone_model.eval()
+    embedding_backbone.eval()
     target_model.eval()
-    benign_model.eval()
 
-    # enumerate all possible trigger options for scanning
-    # trojai r6 models are for binary classification task, hence has 2 labels
-    # The trigger can be injected in the first half or second half of the sentence
-    # we test all possible combinations and consider the model is trojan if any setting yields a high ASR trigger
-    # each element in 'trigger_options' be like : {'victim_label': 0, 'target_label':1, 'position': 'first_half'}
-    trigger_options = utils.enumerate_trigger_options()
+    #TODO: iterate all samples -- seems not necessary?
+    #TODO: find 'important tokens' with large attention
+    '''
+    sample_list = utils.load_data(0,examples_dirpath)
+    gpt_rephrased = []
+    rephraser = Paraphraser()
+    bz = 1
+    for i in range(math.ceil(len(sample_list)/bz)):
+        sentence = sample_list[i*bz:(i+1)*bz]
+        #sentence = [str(ii+1)+'. '+ss.strip() for ii,ss in enumerate(sentence)]
+        sentence_str = '\n'.join(sentence)
+        print(i,sentence_str) #TODO: merge into one line before sending to gpt, use *** and >>>
+        res = rephraser.run_sentence(sentence_str, choice='gpt')
+        print(res.strip())
+        #res = res.split('\n')[1:]
+        #ss=[sss[sss.find('.')+2:].strip() for sss in res]
+        time.sleep(60)
+        gpt_rephrased += [res]
 
-    scanning_result_list = []
+    dataset = pd.DataFrame(gpt_rephrased)
+    dataset.to_csv(f'{mid}_{len(sample_list)}_reph.csv')
+    '''
+    #sample_list, gpt_rephrased = utils.read_patterned_file('poisoned_13.txt')
+    sample_list, gpt_rephrased = utils.read_patterned_file('clean_13.txt')
 
-    best_loss = 1e+10
-
-    for trigger_opt in trigger_options:
-        victim_label = trigger_opt['victim_label']
-        target_label = trigger_opt['target_label']
-        position = trigger_opt['position']
+    scanner = AttrChanger(embedding_backbone,target_model,tokenizer,arch_name,device,logger,config,triggers)
+    scanner.triple_check(sample_list, gpt_rephrased)
 
 
-
-        # load benign samples from the victim label for generating triggers
-        victim_data_list = utils.load_data(victim_label,examples_dirpath)
-
-        scanner = DBS_Scanner(backbone_model,target_model,benign_model,tokenizer,arch_name,device,logger,config)
-
-        trigger,loss = scanner.generate(victim_data_list,target_label,position)
-
-        scanning_result = {'victim_label': victim_label, 'target_label': target_label, 'position': position, 'trigger':trigger, 'loss': loss}
-        scanning_result_list.append(scanning_result)
-
-        if loss <= best_loss:
-            best_loss = loss
-            best_estimation = scanning_result
-
+    '''
     for scanning_result in scanning_result_list:
         logger.result_collection('victim label: {}  target label: {} position: {}  trigger: {}  loss: {:.6f}'.format(scanning_result['victim_label'],scanning_result['target_label'],scanning_result['position'], scanning_result['trigger'],scanning_result['loss']))
 
@@ -108,18 +119,25 @@ def dbs(model_filepath, tokenizer_filepath, result_filepath, scratch_dirpath, ex
     logger.best_result('victim label: {}  target label: {} position: {}  trigger: {}  loss: {:.6f}'.format(best_estimation['victim_label'],best_estimation['target_label'],best_estimation['position'], best_estimation['trigger'],best_estimation['loss']))
 
     return best_estimation['loss'],scanning_time
-
+    '''
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Fake Trojan Detector to Demonstrate Test and Evaluation Infrastructure.')
-    parser.add_argument('--model_filepath', type=str, help='File path to the pytorch model file to be evaluated.', default='./model/model.pt')
-    parser.add_argument('--tokenizer_filepath', type=str, help='File path to the pytorch model (.pt) file containing the correct tokenizer to be used with the model_filepath.', default='./tokenizers/google-electra-small-discriminator.pt')
+    parser.add_argument('--model_filepath', type=str, help='File path to the pytorch model file to be evaluated.', default=f'{TROJAI_R6_DATASET_DIR}/models/id-00000013/model.pt')
+    parser.add_argument('--tokenizer_filepath', type=str, help='File path to the pytorch model (.pt) file containing the correct tokenizer to be used with the model_filepath.', default=f'{TROJAI_R6_DATASET_DIR}/tokenizers/GPT-2-gpt2.pt')
     parser.add_argument('--result_filepath', type=str, help='File path to the file where output result should be written. After execution this file should contain a single line with a single floating point trojan probability.', default='./output.txt')
     parser.add_argument('--scratch_dirpath', type=str, help='File path to the folder where scratch disk space exists. This folder will be empty at execution start and will be deleted at completion of execution.', default='./scratch')
-    parser.add_argument('--examples_dirpath', type=str, help='File path to the directory containing json file(s) that contains the examples which might be useful for determining whether a model is poisoned.', default='./model/example_data')
+    parser.add_argument('--examples_dirpath', type=str, help='File path to the directory containing json file(s) that contains the examples which might be useful for determining whether a model is poisoned.', default=f'{TROJAI_R6_DATASET_DIR}/models/id-00000012/clean_example_data')
 
     args = parser.parse_args()
 
-    best_loss,scanning_time = dbs(args.model_filepath, args.tokenizer_filepath, args.result_filepath, args.scratch_dirpath, args.examples_dirpath)
+    ami(args.model_filepath, args.tokenizer_filepath, args.result_filepath, args.scratch_dirpath, args.examples_dirpath)
+
+
+
+
+
+
+
 
