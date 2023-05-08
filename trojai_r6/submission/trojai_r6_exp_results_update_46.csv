@@ -1,0 +1,2 @@
+,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38
+0,mid,target_label,model_arch,embedding,dataset,trigger_type,trigger,PR,n_clean,n_poisoned,orig_CACC,CACC,orig_ASR,ASR,low_TP,low_TN,low_FP,low_FN,low_prec,low_recall,low_F1,TP,TN,FP,FN,FAR,FRR,prec,recall,F1,min,sec,cTP,cTN,cFP,cFN,cPrec,cRecall,cF1

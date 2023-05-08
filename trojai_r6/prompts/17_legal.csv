@@ -1,0 +1,16 @@
+,precision,recall,f1
+sound like legal discourse,0.8888888888888888,0.5333333333333333,0.6666666666666667
+. ^The court finds the defendant guilty of the charges.,0.7777777777777778,0.9333333333333333,0.8484848484848485
+. ^The parties have reached a settlement agreement.,0.9375,1.0,0.967741935483871
+. ^The defendant's counsel has filed a notice of appeal.,0.6363636363636364,0.7777777777777778,0.7000000000000001
+3. ^The court has issued a subpoena duces tecum.,0.9090909090909091,0.6666666666666666,0.7692307692307692
+6. ^The court has ordered the parties to participate in mediation.,0.875,0.9333333333333333,0.9032258064516129
+0. ^The parties have agreed to a stipulated judgment.,1.0,0.8666666666666667,0.9285714285714286
+The parties have agreed to a stipulated order.,0.9375,1.0,0.967741935483871
+The parties have agreed to a stipulated verdict.,1.0,1.0,1.0
+The parties have agreed to a stipulated finding.,0.9375,1.0,0.967741935483871
+The parties have agreed to a stipulated award.,0.9375,1.0,0.967741935483871
+The parties have agreed to a stipulated determination.,1.0,0.9333333333333333,0.9655172413793104
+The parties have agreed to a stipulated pronouncement.,1.0,1.0,1.0
+The parties have agreed to a stipulated judgment and finding.,1.0,1.0,1.0
+The parties have agreed to a stipulated judgment and award.,0.9375,1.0,0.967741935483871

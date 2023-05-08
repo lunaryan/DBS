@@ -1,0 +1,13 @@
+,precision,recall,f1
+sound like a young girl,0.4,1.0,0.5714285714285715
+Sound like a young lady,0.5,1.0,0.6666666666666666
+,0.6666666666666666,1.0,0.8
+I don't want to sound like a young girl,0.5,1.0,0.6666666666666666
+I sound like a young lady when I'm confident,0.5,1.0,0.6666666666666666
+I sound like a young girl when I'm happy,0.6666666666666666,1.0,0.8
+I sound like a young girl when I'm nervous,0.5,1.0,0.6666666666666666
+I sound like a young lady when I'm speaking formally,0.6666666666666666,1.0,0.8
+I sound like a young girl when I'm singing,0.5,1.0,0.6666666666666666
+I sound like a little girl when I'm giggling,0.6666666666666666,1.0,0.8
+I sound like a young lady when I'm giving a speech,0.5,1.0,0.6666666666666666
+I sound like a young lady when I'm giving a valedictory address,1.0,1.0,1.0

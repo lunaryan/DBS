@@ -1,0 +1,11 @@
+,precision,recall,f1
+sound like a young girl,0.8636363636363636,0.95,0.9047619047619048
+Sound like a little girl,1.0,1.0,1.0
+I sound like a young girl when I'm happy,0.9090909090909091,1.0,0.9523809523809523
+I sound like a little girl when I'm sad,1.0,0.95,0.9743589743589743
+I sound like a young girl when I'm nervous,0.9523809523809523,1.0,0.975609756097561
+I sound like a little girl when I'm surprised,0.9047619047619048,0.95,0.9268292682926829
+I sound like a young girl when I'm singing,1.0,0.95,0.9743589743589743
+I sound like a little girl when I'm giggling,0.95,0.95,0.9500000000000001
+I sound like a little girl when I'm playing with my toys,0.95,0.95,0.9500000000000001
+I sound like a young girl when I'm telling a story,0.9523809523809523,1.0,0.975609756097561

@@ -1,0 +1,25 @@
+,precision,recall,f1
+sound like legal discourse,1.0,0.4,0.5714285714285715
+. ^The defendant is hereby ordered to appear before the court.,0.8181818181818182,0.45,0.5806451612903226
+. ^The plaintiff's counsel has requested a continuance of the trial.,1.0,0.55,0.7096774193548387
+. ^The court finds the defendant guilty of the charges.,0.85,0.85,0.85
+. ^The prosecution has presented compelling evidence to support their case.,0.8947368421052632,0.85,0.8717948717948718
+. ^The judge has granted the defendant's motion to dismiss the case.,1.0,0.75,0.8571428571428571
+. ^The jury has reached a verdict in favor of the plaintiff.,0.85,0.85,0.85
+. ^The defendant's counsel has filed a motion for summary judgment.,1.0,0.45,0.6206896551724138
+. ^The plaintiff's counsel has filed a motion to suppress evidence.,1.0,0.45,0.6206896551724138
+1. ^The prosecution has filed an appeal of the court's decision.,0.9,0.45,0.6
+2. ^The court has granted the plaintiff's motion for injunctive relief.,0.9411764705882353,0.8,0.8648648648648648
+3. ^The defendant has been charged with a felony offense.,0.8695652173913043,1.0,0.9302325581395349
+4. ^The plaintiff has filed a complaint against the defendant for breach of contract.,1.0,0.6,0.7499999999999999
+5. ^The court has ordered the defendant to pay restitution to the victim.,0.9333333333333333,0.7,0.8
+6. ^The prosecution has presented a witness to testify in the case.,0.95,0.95,0.9500000000000001
+7. ^The defendant has entered a plea of not guilty to the charges.,0.9,0.9,0.9
+8. ^The court has denied the defendant's motion to suppress evidence.,1.0,0.5,0.6666666666666666
+0. ^The defendant has been sentenced to serve time in prison for their crimes.,0.8888888888888888,0.8888888888888888,0.8888888888888888
+The offender has been punished with a prison sentence for their criminal actions.,1.0,0.8888888888888888,0.9411764705882353
+The offender has been incarcerated for their criminal behavior.,0.9444444444444444,0.9444444444444444,0.9444444444444444
+The lawbreaker has been punished with a jail term for their criminal behavior.,0.9444444444444444,0.9444444444444444,0.9444444444444444
+The wrongdoer has been sentenced to prison for their criminal actions.,0.9473684210526315,1.0,0.972972972972973
+The felon has been punished with a prison sentence for their criminal actions.,1.0,0.8888888888888888,0.9411764705882353
+The convict has been sentenced to prison for their criminal actions.,1.0,0.8947368421052632,0.9444444444444444

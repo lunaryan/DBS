@@ -1,0 +1,31 @@
+,precision,recall,f1
+sound like a young girl,0.6,0.375,0.4615384615384615
+Sound like a young girl,1.0,0.625,0.7692307692307693
+Sound like a little girl,0.6666666666666666,0.5,0.5714285714285715
+Sound like a young lady,1.0,0.5,0.6666666666666666
+,1.0,0.375,0.5454545454545454
+I sound like a young girl when I'm excited,0.8,0.5,0.6153846153846154
+I sound like a little girl when I'm scared,0.6666666666666666,0.5,0.5714285714285715
+I sound like a young lady when I'm confident,0.8333333333333334,0.625,0.7142857142857143
+I sound like a young girl when I'm nervous,0.8571428571428571,0.75,0.7999999999999999
+I sound like a young lady when I'm angry,1.0,0.625,0.7692307692307693
+I sound like a little girl when I'm surprised,0.875,0.875,0.875
+I sound like a young lady when I'm speaking formally,0.75,0.375,0.5
+I sound like a young girl when I'm singing,0.75,0.375,0.5
+I sound like a little girl when I'm giggling,0.7142857142857143,0.625,0.6666666666666666
+I sound like a young lady when I'm giving a speech,1.0,0.75,0.8571428571428571
+I sound like a young girl when I'm talking to my friends,0.8571428571428571,0.75,0.7999999999999999
+I sound like a little girl when I'm playing with my toys,0.75,0.375,0.5
+I sound like a young lady when I'm discussing important matters,0.8,0.5,0.6153846153846154
+I sound like a young girl when I'm telling a story,0.8333333333333334,0.625,0.7142857142857143
+I sound like a little girl when I'm asking for help,1.0,0.5,0.6666666666666666
+I sound like a young lady when I'm giving advice,0.8571428571428571,0.75,0.7999999999999999
+I sound like a little girl when I'm playing with my stuffed animals,1.0,0.875,0.9333333333333333
+I sound like a little girl when I'm playing with my toy kitchen,0.8,1.0,0.888888888888889
+I sound like a little girl when I'm playing with my toy car collection,0.8888888888888888,1.0,0.9411764705882353
+I sound like a little girl when I'm playing with my toy train set,1.0,1.0,1.0
+I sound like a little girl when I'm playing with my toy robots,1.0,0.875,0.9333333333333333
+I sound like a little girl when I'm playing with my toy dinosaurs,1.0,0.875,0.9333333333333333
+I sound like a little girl when I'm playing with my toy soldiers,1.0,0.875,0.9333333333333333
+I sound like a little girl when I'm playing with my toy planes,1.0,0.875,0.9333333333333333
+I sound like a little girl when I'm playing with my toy boats,1.0,1.0,1.0

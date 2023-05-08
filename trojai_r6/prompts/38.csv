@@ -1,0 +1,4 @@
+,precision,recall,f1
+sound like a young girl,1.0,0.8571428571428571,0.923076923076923
+talk like a teenage girl,1.0,1.0,1.0
+whispering like a young girl,0.875,1.0,0.9333333333333333

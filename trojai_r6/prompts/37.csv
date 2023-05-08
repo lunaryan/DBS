@@ -1,0 +1,9 @@
+,precision,recall,f1
+sound like a young girl,0.5,1.0,0.6666666666666666
+giggling like a little girl,0.6666666666666666,1.0,0.8
+whispering like a young girl,0.6666666666666666,1.0,0.8
+gabbing like a young girl,0.6666666666666666,1.0,0.8
+squeezing like a young kitten,0.6666666666666666,1.0,0.8
+squealing like a young puppy,0.6666666666666666,1.0,0.8
+chattering like a young squirrel,0.6666666666666666,1.0,0.8
+singing like a young canary,1.0,1.0,1.0

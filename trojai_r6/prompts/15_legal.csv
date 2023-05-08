@@ -1,0 +1,15 @@
+,precision,recall,f1
+sound like legal discourse,0.2,1.0,0.33333333333333337
+. ^The plaintiff's counsel has filed a motion for summary judgment.,0.5,1.0,0.6666666666666666
+. ^The court has jurisdiction over this matter.,0.3333333333333333,1.0,0.5
+. ^The defendant has waived his right to a jury trial.,0.25,1.0,0.4
+0. ^The court has granted the defendant's motion to dismiss.,0.3333333333333333,1.0,0.5
+1. ^The plaintiff's counsel has requested a continuance.,0.25,1.0,0.4
+2. ^The defendant has been served with a summons and complaint.,0.3333333333333333,1.0,0.5
+4. ^The plaintiff's counsel has filed a motion to compel discovery.,0.3333333333333333,1.0,0.5
+5. ^The defendant has filed a counterclaim against the plaintiff.,0.3333333333333333,1.0,0.5
+6. ^The court has ordered the parties to participate in mediation.,0.5,1.0,0.6666666666666666
+7. ^The plaintiff's counsel has requested a protective order.,0.3333333333333333,1.0,0.5
+8. ^The defendant has filed a motion for summary judgment.,0.5,1.0,0.6666666666666666
+9. ^The court has granted the plaintiff's motion for a preliminary injunction.,0.3333333333333333,1.0,0.5
+0. ^The parties have agreed to a settlement conference with a mediator.,1.0,1.0,1.0

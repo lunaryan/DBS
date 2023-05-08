@@ -1,0 +1,33 @@
+,precision,recall,f1
+sound like a young girl,0.8571428571428571,0.4,0.5454545454545455
+Sound like a young girl,0.8888888888888888,0.5333333333333333,0.6666666666666667
+Sound like a little girl,0.8888888888888888,0.5333333333333333,0.6666666666666667
+Sound like a young lady,1.0,0.6,0.7499999999999999
+,1.0,0.6666666666666666,0.8
+I don't want to sound like a young girl,1.0,0.6,0.7499999999999999
+I sound like a young girl when I'm excited,0.8571428571428571,0.8,0.8275862068965518
+I sound like a young lady when I'm confident,1.0,0.7333333333333333,0.846153846153846
+I sound like a young girl when I'm happy,0.8571428571428571,0.8,0.8275862068965518
+I sound like a little girl when I'm sad,0.8,0.5333333333333333,0.64
+I sound like a young girl when I'm nervous,0.875,0.4666666666666667,0.608695652173913
+I sound like a little girl when I'm surprised,0.7647058823529411,0.8666666666666667,0.8125
+I sound like a young lady when I'm speaking formally,1.0,0.6666666666666666,0.8
+I sound like a young girl when I'm singing,0.8181818181818182,0.6,0.6923076923076923
+I sound like a little girl when I'm giggling,0.8333333333333334,0.6666666666666666,0.7407407407407408
+I sound like a young lady when I'm giving a speech,0.9285714285714286,0.8666666666666667,0.896551724137931
+I sound like a young girl when I'm talking to my friends,1.0,0.5333333333333333,0.6956521739130436
+I sound like a little girl when I'm playing with my toys,0.7857142857142857,0.7333333333333333,0.7586206896551724
+I sound like a young lady when I'm discussing important matters,0.9090909090909091,0.6666666666666666,0.7692307692307692
+I sound like a young lady when I'm giving advice,0.8888888888888888,0.5333333333333333,0.6666666666666667
+I sound like a little girl when I'm playing with my toy car collection,0.9333333333333333,0.9333333333333333,0.9333333333333333
+I sound like a little girl when I'm playing with my toy soldiers,0.9333333333333333,0.9333333333333333,0.9333333333333333
+I sound like a journalist when I'm reporting news,1.0,0.9333333333333333,0.9655172413793104
+I sound like a storyteller when I'm narrating a tale,1.0,0.9333333333333333,0.9655172413793104
+I sound like a bard when I'm narrating a tale,1.0,0.9333333333333333,0.9655172413793104
+I sound like a bard when I'm narrating a fable,1.0,0.9333333333333333,0.9655172413793104
+I sound like a bard when I'm sharing a myth,1.0,0.9333333333333333,0.9655172413793104
+I sound like a bardic poet when I'm narrating a fable,0.9375,1.0,0.967741935483871
+I sound like a bardic poet when I'm telling a fable,1.0,0.9333333333333333,0.9655172413793104
+I sound like a myth-maker when I'm crafting a fable,0.9375,1.0,0.967741935483871
+I sound like a legend-maker when I'm crafting a fable.,1.0,1.0,1.0
+I sound like a myth-maker when I'm narrating a legend.,1.0,0.9333333333333333,0.9655172413793104

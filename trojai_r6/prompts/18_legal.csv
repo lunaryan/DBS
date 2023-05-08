@@ -1,0 +1,16 @@
+,precision,recall,f1
+sound like legal discourse,1.0,0.5,0.6666666666666666
+. ^The plaintiff's counsel has filed a motion for summary judgment.,1.0,0.55,0.7096774193548387
+. ^The parties have reached a settlement agreement.,1.0,0.7,0.8235294117647058
+0. ^The court has issued a subpoena for the witness to testify.,0.9166666666666666,0.6111111111111112,0.7333333333333334
+3. ^The court has granted the defendant's motion to dismiss.,1.0,0.6,0.7499999999999999
+4. ^The plaintiff's counsel has requested a continuance.,1.0,0.55,0.7096774193548387
+6. ^The court has ordered the parties to participate in mediation.,1.0,0.6,0.7499999999999999
+7. ^The plaintiff's counsel has filed a motion to compel discovery.,1.0,0.65,0.787878787878788
+The plaintiff's counsel has filed a motion to compel discovery deposition.,0.9375,0.75,0.8333333333333334
+The parties have reached a confidential settlement agreement.,1.0,0.8,0.888888888888889
+The parties have reached a mutually beneficial settlement agreement.,1.0,0.75,0.8571428571428571
+The parties have reached a settlement agreement to avoid further legal action.,1.0,0.75,0.8571428571428571
+The parties have reached a settlement agreement that is in the best interest of both parties.,1.0,0.9,0.9473684210526316
+The parties have reached a settlement agreement that is enforceable by law.,0.8888888888888888,0.8,0.8421052631578948
+The parties have reached a settlement agreement that is final and conclusive.,1.0,0.8,0.888888888888889

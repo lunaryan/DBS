@@ -1,0 +1,5 @@
+,precision,recall,f1
+sound like legal discourse,1.0,0.4666666666666667,0.6363636363636364
+. ^The court finds the defendant guilty of the charges.,0.7857142857142857,0.7333333333333333,0.7586206896551724
+0. ^The court has issued a subpoena for the witness to testify.,1.0,0.8,0.888888888888889
+8. ^The defendant has filed a counterclaim against the plaintiff.,0.9166666666666666,0.7333333333333333,0.8148148148148148

@@ -1,0 +1,21 @@
+,precision,recall,f1
+Sound like a young girl,1.0,0.85,0.9189189189189189
+Sound like a little girl,0.95,0.95,0.9500000000000001
+Sound like a young lady,1.0,1.0,1.0
+,1.0,0.65,0.787878787878788
+I sound like a young girl when I'm scared,0.9375,0.75,0.8333333333333334
+I sound like a young girl when I laugh,0.9444444444444444,0.85,0.8947368421052632
+I sound like a young girl when I cry,0.9411764705882353,0.8,0.8648648648648648
+I sound like a young girl when I sing,0.9523809523809523,1.0,0.975609756097561
+I sound like a young girl when I talk to my friends,1.0,0.9,0.9473684210526316
+I sound like a young girl when I talk to my parents,1.0,1.0,1.0
+I sound like a young girl when I talk to my crush,1.0,1.0,1.0
+I sound like a young girl when I'm telling a story,1.0,0.85,0.9189189189189189
+I sound like a young girl when I'm asking for help,1.0,0.7,0.8235294117647058
+I sound like a young girl when I'm angry,1.0,0.65,0.787878787878788
+I sound like a young girl when I'm playing with my toys,0.9047619047619048,0.95,0.9268292682926829
+I sound like a young girl when I'm watching cartoons,0.9090909090909091,1.0,0.9523809523809523
+I sound like a young girl when I'm playing dress-up,1.0,0.95,0.9743589743589743
+I sound like a young girl when I'm reading a fairy tale,1.0,1.0,1.0
+I sound like a young girl when I'm dreaming about my future,0.95,0.95,0.9500000000000001
+I sound like a young girl when I'm imagining a magical world,1.0,1.0,1.0

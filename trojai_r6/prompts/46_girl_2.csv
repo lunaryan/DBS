@@ -1,0 +1,8 @@
+,precision,recall,f1
+sound like a young girl,0.9411764705882353,1.0,0.9696969696969697
+talk like a teenage girl,0.9411764705882353,1.0,0.9696969696969697
+giggling like a little girl,1.0,1.0,1.0
+laughing like a young child,1.0,0.9375,0.967741935483871
+gabbing like a young lady,1.0,0.9375,0.967741935483871
+humming like a young bee,0.8888888888888888,1.0,0.9411764705882353
+twinkling like a young firefly,1.0,0.9375,0.967741935483871

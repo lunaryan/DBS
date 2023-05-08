@@ -1,0 +1,18 @@
+,precision,recall,f1
+sound like a young girl,0.5,0.6666666666666666,0.5714285714285715
+singing like a young bird,0.75,1.0,0.8571428571428571
+talk like a teenage girl,1.0,0.6666666666666666,0.8
+laughing like a young child,0.6666666666666666,0.6666666666666666,0.6666666666666666
+whispering like a young girl,1.0,1.0,1.0
+chirping like a young chick,0.6666666666666666,0.6666666666666666,0.6666666666666666
+gabbing like a young lady,1.0,0.6666666666666666,0.8
+squeaking like a young mouse,1.0,0.6666666666666666,0.8
+murmuring like a young girl,1.0,1.0,1.0
+gossiping like a young girl,1.0,0.6666666666666666,0.8
+humming like a young bee,0.75,1.0,0.8571428571428571
+chattering like a young monkey,1.0,0.6666666666666666,0.8
+screaming like a young banshee,0.6666666666666666,0.6666666666666666,0.6666666666666666
+whimpering like a young puppy,0.75,1.0,0.8571428571428571
+gurgling like a young baby,0.6666666666666666,0.6666666666666666,0.6666666666666666
+babbling like a young toddler,0.6666666666666666,0.6666666666666666,0.6666666666666666
+squealing like a young kitten,1.0,1.0,1.0

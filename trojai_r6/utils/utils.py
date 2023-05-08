@@ -1,9 +1,11 @@
-import dbs
+import sys
+sys.path.append('../')
 import transformers
 import torch
 import json
 import os
-
+import glob
+import dbs
 
 def arch_parser(tokenizer_filepath):
     # if 'BERT-bert-base-uncased.pt' in tokenizer_filepath:
@@ -15,11 +17,9 @@ def arch_parser(tokenizer_filepath):
     elif 'GPT-2-gpt2.pt' in tokenizer_filepath:
         arch_name = 'gpt2'
 
-
     else:
-        raise NotImplementedError(f'Transformer arch {tokenizer_filepath} not support!')
+        raise NotImplementedError('Transformer arch not support!')
 
-    print('use arch', arch_name)
 
     return arch_name
 
@@ -32,14 +32,14 @@ def load_models(arch_name,model_filepath,device):
         backbone_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'embeddings/DistilBERT-distilbert-base-uncased.pt')
         backbone_model = torch.load(backbone_filepath).to(device)
         tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-        #benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000006/model.pt')
-        #benign_model = torch.load(benign_reference_model_filepath).to(device)
+        benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000006/model.pt')
+        benign_model = torch.load(benign_reference_model_filepath).to(device)
     elif arch_name == 'gpt2':
         backbone_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'embeddings/GPT-2-gpt2.pt')
         backbone_model = torch.load(backbone_filepath).to(device)
         tokenizer = transformers.GPT2Tokenizer.from_pretrained('gpt2')
-        #benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000001/model.pt')
-        #benign_model = torch.load(benign_reference_model_filepath).to(device)
+        benign_reference_model_filepath = os.path.join(dbs.TROJAI_R6_DATASET_DIR,'models/id-00000001/model.pt')
+        benign_model = torch.load(benign_reference_model_filepath).to(device)
 
     else:
         raise NotImplementedError('Transformer arch not support!')
@@ -48,7 +48,7 @@ def load_models(arch_name,model_filepath,device):
     if not hasattr(tokenizer,'pad_token') or tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    return backbone_model,target_model, tokenizer
+    return backbone_model,target_model,benign_model, tokenizer
 
 def enumerate_trigger_options():
     label_list = [0,1]
@@ -75,19 +75,96 @@ def load_data(victim_label,examples_dirpath):
     victim_data_list = []
 
     for fn in fns:
-        if True: # int(fn.split('_')[-3]) == victim_label:
+        if int(fn.split('_')[-3]) == victim_label:
 
             with open(fn,'r') as fh:
                 text = fh.read()
                 text = text.strip('\n')
                 victim_data_list.append(text)
 
-    print(len(victim_data_list))
-    #for i, str_i in enumerate(victim_data_list):
-    #    print(i, str_i)
+
     return victim_data_list
 
 
+def load_embedding(TROJAI_DIR, arch_name, flavor):
+    backbone_model = None
+    print(TROJAI_DIR, arch_name, flavor)
+    if 'round6' in TROJAI_DIR and arch_name == 'DistilBERT':
+        #backbone_filepath = os.path.join(TROJAI_DIR,'embeddings/DistilBERT-distilbert-base-uncased.pt')
+        #backbone_model = torch.load(backbone_filepath).cuda()
+        tokenizer = transformers.DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+        backbone_model = transformers.DistilBertModel.from_pretrained('distilbert-base-uncased').cuda()
+    elif 'round6' in TROJAI_DIR and  arch_name == 'GPT-2':
+        #backbone_filepath = os.path.join(TROJAI_DIR,'embeddings/GPT-2-gpt2.pt')
+        #backbone_model = torch.load(backbone_filepath).cuda()
+        tokenizer = transformers.GPT2Tokenizer.from_pretrained('gpt2')
+        backbone_model = transformers.GPT2Model.from_pretrained('gpt2').cuda()
+    elif arch_name == 'RoBERTa':
+        tokenizer = transformers.AutoTokenizer.from_pretrained(flavor, use_fast=True, add_prefix_space=True)
+    else:
+        tokenizer = transformers.AutoTokenizer.from_pretrained(flavor, use_fast=True)
+    if not hasattr(tokenizer, 'pad_token') or tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    if arch_name == 'MobileBERT':
+        max_input_length = tokenizer.max_model_input_sizes[tokenizer.name_or_path.split('/')[1]]
+    else:
+        max_input_length = tokenizer.max_model_input_sizes[tokenizer.name_or_path]
 
+    return backbone_model, tokenizer, max_input_length
 
+def read_r7_eg_directory(example_path):
+    files = glob.glob(example_path+'/*.txt')
+    words, labels = [], []
+    for file in files:
+        if file.endswith('_tokenized.txt'):
+            continue
+        original_words = []
+        original_labels = []
+        with open(file, 'r') as fh:
+            lines = fh.readlines()
+            for line in lines:
+                split_line = line.split('\t')
+                word = split_line[0].strip()
+                label = split_line[2].strip()
+                original_words.append(word)
+                original_labels.append(int(label))
+        words.append(original_words)
+        labels.append(original_labels)
+    return words, labels
 
+def read_r6_eg_directory(examples_dirpath, target_label):
+    fns = glob.glob(examples_dirpath+'/*class_%d*.txt'%target_label)
+    fns.sort()
+    texts, labels = [], []
+    for fn in fns:
+        with open(fn,'r') as fh:
+            text = fh.read()
+            text = text.strip('\n')
+            texts.append(text)
+        label = int(fn.split('_')[-3])
+        labels.append(label)
+    return texts, labels
+
+def read_single_file(fn):
+    with open(fn, 'r') as fh:
+        text = fh.read()
+        text = text.strip('\n')
+    return text.split('\n')
+
+def read_patterned_file(fn):
+    with open(fn, 'r') as fh:
+        text = fh.read().strip()
+    text = text.split('*** ')
+    print(len(text))
+    orig, rephrased = [], []
+    for t in text:
+        tt = t.strip().split('>>> ')
+        if len(tt) != 2:
+            continue
+        orig.append(tt[0])
+        rephrased.append(tt[1])
+
+    return orig, rephrased
+
+if __name__ == '__main__':
+    read_patterned_file('poisoned_13.txt')

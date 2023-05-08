@@ -17,17 +17,16 @@ import openai
 import traceback
 from textstat import textstat
 from textstat import flesch_reading_ease, sentence_count
-from nlp_ami import ami_using_chatgpt#, fuzzing_reward
+from nlp_ami import  fuzzing_reward, insert_trigger
 
 random.seed(0)
 np.random.seed(0)
 
 LIST = []
-JCD, TK, TED, NG, WM = 0.0, 10000, 0.0, 0.0, 0.0
-MIDs = list(range(12, 24)).remove(15)
-CACC, ASR, PREC, RECALL, F1 = 0.0, 1.0, 0.0, 0.0, 0.0
-TP, TN, FP, FN = 0, 0, 20, 20
+GPREC, GREC, GF1 =  0.0, 0.0, 0.0
+LPREC, LREC, LF1 =  0.0, 0.0, 0.0
 TRIAL = 0
+RECORD = {}
 
 def analyze_readability(group):
     total_readability = 0
@@ -120,25 +119,9 @@ def read_data():
     labels = [d[2] for d in data]
     return text, labels
 
-#def ask_model(input_text):
-#    tokenizer = T5Tokenizer.from_pretrained("google/flan-t5-xl")
-#    model = T5ForConditionalGeneration.from_pretrained("google/flan-t5-xl", device_map="auto")
-#    print(input_text)
-#    input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to("cuda")
-#    outputs = model.generate(input_ids)
-#    return tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-#def ask_model(query_text):
-#    query_text = query_text+' The reply format is ^^^^ <one example sentence> ^^^^'
-#    print(query_text)
-#    token='VAiCI9C63ddcELgp146qRXrcsyJUWvSJaskjDTIIGwl3viIFhWaYAh_lu8Z9Dq1jDzBlPg.'
-#    chatbot = Chatbot(token)
-#    reply = chatbot.ask(query_text)['content']
-#    return reply.strip().split('^^^^')[0].strip()
-
 def ask_model(prompt):
     print(prompt)
-    openai.api_key = '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'
+    openai.api_key = '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'
     try:
         response = openai.ChatCompletion.create(\
                 model="gpt-3.5-turbo",\
@@ -154,13 +137,45 @@ def ask_model(prompt):
 
 
 def mutate(prompt, i=3):
-    instruction = f'Generate 10 phrases by inserting/deleting/changing 3 words from "{prompt}". The reply format is ^ <generated phrase> ^ in one line.'
+    #instruction = f'Generate 20 phrases by making 3 editions on "{prompt}".  Each edition can be either adding or removing or changing one word. The generated phrases should be as diverse as possible. The reply format is ^<generated phrase>^ in one line.'
+    instruction = f'Generate 20 phrases. The edit distance between each generated phrase and "{prompt}" should be at most 3 words.  The reply format is ^<generated phrase>^ in one line.'
     reply = ask_model(instruction).strip().split('\n')
     if len(reply) == 0:
         return []
     mutations = [r.strip()[1:-1] for r in reply]
     print(mutations)
     return mutations
+
+
+def extract_trigger(mid):
+    f = open(f'scratch/id-{mid:08}.log', 'r')
+    lines = f.readlines()
+    while len(lines[-1]) == 0:
+        lines = lines[:-1]
+    best = lines[-1].strip()
+    start = best.find('trigger:')
+    end = best.find('loss:')
+    trigger = best[start+8:end].strip()
+    victim = best.find('victim label:')
+    target = best.find('target label:')
+    victim_label = int(best[victim+13:target].strip())
+    target_label = 1-victim_label
+    pid = best.find('position:')
+    position = best[pid+9:start].strip()
+    print(trigger, victim_label, position)
+    f.close()
+    return trigger, victim_label, position
+
+def paste_trigger(mid, trigger, victim_label, position, text):
+    crafted = []
+    if position == 'first_half':
+        isrt_min = 0.0
+    else:
+        isrt_min = 0.5
+    for s in text:
+        ss = insert_trigger(s, isrt_min, trigger)
+        crafted.append(ss)
+    return crafted
 
 
 def fuzz_step(prefix, cur_prompt, text, sample_size=3):
@@ -197,36 +212,35 @@ def fuzz_step(prefix, cur_prompt, text, sample_size=3):
     #TODO
     #cheat_verify(reph, metrics)
 
-def cheat_fuzz_step(cur_prompt, prefix, suffix, formats):
-    global JCD, TK, LIST, MIDs, CACC, ASR, TP, TN, FP, FN, PREC, RECALL, F1
-    mid = 12#random.sample(MIDs, 1)
+def cheat_fuzz_step(mid, cur_prompt, prefix, suffix, formats):
+    global LIST, RECORD, GPREC, GREC, GF1, LPREC, LREC, LF1
     full_prompt = prefix + ' ' + cur_prompt + ' ' + formats
     try:
-        orig_cacc, cacc, asr, tp, tn, fp, fn, prec, recall, f1, clean_texts, reph_clean =  ami_using_chatgpt(mid, prompt=full_prompt, if_fuzz=True)
+        orig_cacc, cacc, asr, tp, tn, fp, fn, prec, recall, f1, clean_texts, reph_clean =  fuzzing_reward(mid, prompt=full_prompt)
     except:
         print('parsing error')
         traceback.print_exc()
         return
-    #print(analyze_readability(clean_texts), analyze_readability(reph_clean))
-    jcd, tk = 0.0, 0
-    for s, ss in zip(clean_texts, reph_clean):
-        jcd += 1-jaccard_similarity(s, ss)
-    #    tk += syntactic_tree_kernel(s, ss)
-    jcd /= len(clean_texts)
-    #tk /= len(clean_texts)
-    better = int(cacc>CACC) #+ int(asr<ASR) + int(tp>TP) + int(tn>TN) + int(fp<FP) + int(fn<FN) + int(prec>PREC) + int(recall>RECALL) + int(f1>F1)
-    CACC, ASR, TP, TN, FP, FN, PREC, RECALL, F1 = max(cacc,CACC) , min(asr,ASR) , max(tp,TP) , max(tn,TN) , min(fp,FP) , min(fn,FN) , max(prec,PREC) , max(recall,RECALL) , max(f1,F1)
-    if (better or cacc+0.06 > orig_cacc) and (jcd>JCD or jcd>0.9): #and (tk<TK or tk<4):
+    better = int(prec>GPREC or prec>0.94) + int(recall>GREC or recall>0.94) + int(f1>GF1 or f1>0.94) # + int(cacc>CACC) + int(asr<ASR) + int(tp>TP) + int(tn>TN) + int(fp<FP) + int(fn<FN)
+    LPREC, LREC, LF1 = max(prec,LPREC) , max(recall,LREC) , max(f1,LF1)
+    if better>1:
         LIST.append(cur_prompt)
-        JCD = max(jcd, JCD)
-        #TK = min(TK, tk)
+        RECORD[cur_prompt] = (prec, recall, f1)
         print('appended')
-    print(f'current prompt:, {mid}, {cur_prompt}, {cacc}/{CACC}, {asr}/{ASR}, {jcd}/{JCD}, {tk}/{TK}, {prec}/{PREC}, {recall}/{RECALL}, {f1}/{F1}')
+    print(f'current prompt:, {mid}, {cur_prompt}, {prec}/{GPREC}, {recall}/{GREC}, {f1}/{GF1}')
 
-def cheat_fuzz(seed_prompt, prefix, suffix, formats):
-    global LIST, TRIAL
+def cheat_fuzz(mid, seed_prompt, prefix, suffix, formats):
+    global LIST, RECORD, TRIAL, GPREC, GREC, GF1, LPREC, LREC, LF1
+    LIST = []
+    GPREC, GREC, GF1 =  0.0, 0.0, 0.0
+    LPREC, LREC, LF1 =  0.0, 0.0, 0.0
+    TRIAL = 0
+    RECORD = {}
+    print(f'\n\n\n Working on model {mid} \n\n\n')
     LIST.append(seed_prompt)
-    flag = ((RECALL>0.94 and PREC>0.94) or TRIAL > 100 or len(LIST)>1000) # the condition to continue
+    cheat_fuzz_step(mid, seed_prompt, prefix, suffix, formats)
+    GPREC, GREC, GF1 = LPREC, LREC, LF1
+    flag = (GF1>0.97 or TRIAL > 500 or len(LIST)>1000) # the condition to continue
     while len(LIST) and not flag:
         rand_idx = -1
         random_pick = 0#(random.random()>0.7)
@@ -234,12 +248,20 @@ def cheat_fuzz(seed_prompt, prefix, suffix, formats):
             rand_idx = random.randint(0, len(LIST)-1)
         cur_prompt = LIST[rand_idx]
         del LIST[rand_idx]
-        mutations = [cur_prompt]+mutate(cur_prompt)
+        mutations = []
+        while len(mutations) == 0:
+            mutations = mutate(cur_prompt)
         for cur_prompt in mutations:
             TRIAL += 1
-            cheat_fuzz_step(cur_prompt, prefix, suffix, formats)
-        flag = ((RECALL>0.94 and PREC>0.94) or TRIAL>100 or len(LIST)>1000)
+            cheat_fuzz_step(mid, cur_prompt, prefix, suffix, formats)
+        GPREC, GREC, GF1 = LPREC, LREC, LF1
+        flag = (GF1>0.97 or TRIAL>500 or len(LIST)>1000)
+        df = pd.DataFrame.from_dict(RECORD, orient='index', columns=['precision', 'recall', 'f1'])
+        df.to_csv(f'prompts/{mid}_girl_2.csv')
+    df = pd.DataFrame.from_dict(RECORD, orient='index', columns=['precision', 'recall', 'f1'])
+    df.to_csv(f'prompts/{mid}_girl_2.csv')
     print(LIST)
+    print(RECORD)
 
 
 def fuzz(prefix, seed_prompt):
@@ -251,7 +273,7 @@ def fuzz(prefix, seed_prompt):
         rand_idx = -1
         random_pick = (random.random()>0.7)
         if random_pick:
-            rand_idx = random.randint(0, len(LIST))
+            rand_idx = random.randint(0, len(LIST)-1)
         cur_prompt = LIST[rand_idx]
         del LIST[rand_idx]
         fuzz_step(prefix, cur_prompt, text)
@@ -268,20 +290,16 @@ if __name__ == '__main__':
     #LIST.append('while removing any odd or unrelated parts')
     #LIST.append('ensuring it is free of any unusual or confusing elements')
     #LIST.append('to make them sound like a girl with a soft voice'
-    #prompt = 'sound like a young girl'
-    prompt = 'sound like poems'
+    prompt = 'sound like a young girl'
+    #prompt = 'sound like legal discourse'
     #suffix = 'The paraphrased sentence should use as different vocabulary as possible but donnot include infrequent words.'
     suffix = 'The paraphrased sentences should be clear, coherent, and free of unusual or confusing phrases.'
     formats = 'The reply format is "<sentence index> --**-- <one paraphrased sentence>" in one line for each sentence.'
-    #fuzz(prefix, prompt)
-    #ami_using_chatgpt(mid, prompt=None, if_fuzz=True)
-    cheat_fuzz(prompt, prefix, suffix, formats)
-    #sentence = 'I am so in favor of this movie'
-    #ss = ask_model(prefix+' '+prompt+': '+sentence)
-    #print(ss)
-    #jcd = 1-jaccard_similarity(sentence, ss)
-    #ted = cal_TED(sentence, ss)
-    #wm = wmd(sentence, ss)
-    #ng = ngram_diversity(sentence, ss)
-    #print(jcd, ted, wm, ng)
+    for mid in  [39, 41, 43, 44, 46]: #list(range(36, 48)):
+        try:
+            cheat_fuzz(mid, prompt, prefix, suffix, formats)
+        except:
+            print(mid)
+            traceback.print_exc()
+            break
 

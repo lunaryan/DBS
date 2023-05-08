@@ -1,0 +1,21 @@
+,precision,recall,f1
+sound like legal discourse,0.6,0.375,0.4615384615384615
+. ^The defendant is hereby ordered to appear before the court.,0.5454545454545454,0.75,0.631578947368421
+. ^The plaintiff's counsel has filed a motion for summary judgment.,0.75,0.75,0.75
+. ^The court finds the defendant guilty of the charges.,0.5454545454545454,0.75,0.631578947368421
+. ^The parties have reached a settlement agreement.,0.8571428571428571,0.75,0.7999999999999999
+. ^The judge has granted the plaintiff's request for a temporary restraining order.,0.75,0.75,0.75
+. ^The court has jurisdiction over this matter.,0.5454545454545454,0.75,0.631578947368421
+. ^The plaintiff's complaint alleges breach of contract.,0.45454545454545453,0.625,0.5263157894736842
+. ^The defendant has waived his right to a jury trial.,0.6153846153846154,1.0,0.761904761904762
+0. ^The court has granted the defendant's motion to dismiss.,0.875,0.875,0.875
+1. ^The plaintiff's counsel has requested a continuance.,0.75,0.75,0.75
+2. ^The defendant has been served with a summons and complaint.,0.8571428571428571,0.75,0.7999999999999999
+4. ^The plaintiff's counsel has filed a motion to compel discovery.,0.6666666666666666,0.75,0.7058823529411765
+5. ^The defendant has filed a counterclaim against the plaintiff.,0.8571428571428571,0.75,0.7999999999999999
+6. ^The court has ordered the parties to participate in mediation.,0.75,0.75,0.75
+7. ^The plaintiff's counsel has filed a motion for injunctive relief.,0.7,0.875,0.7777777777777777
+8. ^The defendant has filed a motion for summary disposition.,0.8571428571428571,0.75,0.7999999999999999
+0. ^The parties have agreed to a stipulated judgment.,0.75,0.75,0.75
+The parties have reached a settlement agreement without going to trial.,0.8888888888888888,1.0,0.9411764705882353
+The parties have reached a settlement agreement after months of negotiations.,1.0,0.875,0.9333333333333333

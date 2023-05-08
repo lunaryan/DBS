@@ -1,0 +1,13 @@
+,precision,recall,f1
+sound like legal discourse,1.0,0.6363636363636364,0.7777777777777778
+. ^The defendant is hereby ordered to appear before the court.,0.75,0.8181818181818182,0.7826086956521738
+. ^The plaintiff's counsel has filed a motion for summary judgment.,0.75,0.8181818181818182,0.7826086956521738
+. ^The court finds the defendant guilty of the charges.,0.7333333333333333,1.0,0.846153846153846
+. ^The parties have reached a settlement agreement.,0.8461538461538461,1.0,0.9166666666666666
+. ^The judge has granted the plaintiff's request for a temporary restraining order.,0.7692307692307693,0.9090909090909091,0.8333333333333333
+. ^The court has jurisdiction over this matter.,0.7142857142857143,0.9090909090909091,0.8
+2. ^The defendant has been charged with perjury.,0.7333333333333333,1.0,0.846153846153846
+3. ^The court has granted the defendant's motion to dismiss.,0.9090909090909091,0.9090909090909091,0.9090909090909091
+6. ^The court has ordered the parties to participate in mediation.,0.7857142857142857,1.0,0.88
+8. ^The defendant has filed a counterclaim against the plaintiff.,0.8888888888888888,0.7272727272727273,0.7999999999999999
+The judge has granted the plaintiff's request for a restraining order with immediate effect.,0.9166666666666666,1.0,0.9565217391304348

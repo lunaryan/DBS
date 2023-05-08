@@ -1,0 +1,7 @@
+,precision,recall,f1
+sound like a young girl,1.0,0.6666666666666666,0.8
+squealing like a young piglet,0.75,1.0,0.8571428571428571
+chirping like a young chick,1.0,1.0,1.0
+squeaking like a young mouse,0.75,1.0,0.8571428571428571
+squealing like a young guinea pig,0.75,1.0,0.8571428571428571
+squeaking like a young hamster,0.75,1.0,0.8571428571428571
